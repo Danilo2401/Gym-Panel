@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style2.css">
+    <title>Package details</title>
+</head>
+<body>
+
+<div class="hero-img">
+    <img src="hero.jpg" class="img-fluid" alt="hero">
+</div>
+
+<div class="wrapper">
+
+    <div class="mt-4 container text-left ">
+    
+    <nav class="navbar mb-4 navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand">Package</a>
+        <form class="d-flex">
+          <input class="form-control me-2" type="search" id="inputSearch" placeholder="Search" aria-label="Search">
+        </form>
+      </div>
+    </nav>
+    
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Package ID</th>
+          <th scope="col">Package Name</th>
+          <th scope="col">Amount</th>
+        </tr>
+      </thead>
+      <tbody id="trainer-table">
+            <tr>
+                <th>150</th>
+                <th>preliminary</th>
+                <th>800</th>
+            </tr>
+            <tr>
+                <th>250</th>
+                <th>Wt.gain</th>
+                <th>1500</th>
+            </tr>
+            <tr>
+                <th>372</th>
+                <th>Wt.loss</th>
+                <th>1000</th>
+            </tr>
+      </tbody>
+    </table>
+    
+    <div class="text-center">
+        <input type="button" id="btn-back" value="Go Back"  style="width: 200px;" class="mt-4 btn btn-warning">
+    
+    </div>
+       
+        </div>
+    
+</div>
+
+<script>
+$(document).ready(function(){
+
+    $("#inputSearch").on("keyup",function(){
+
+        let value = $(this).val().toLowerCase();
+
+        $(".table  tr").filter(function(){
+
+            let searchTable =  $(this).text().toLowerCase().indexOf(value);
+
+            $(this).toggle(searchTable > -1);
+
+        });
+
+
+    });
+
+    
+    $("#btn-back").click(function(){
+
+        window.location.href = "admin_panel.php";
+
+    });
+
+});
+</script>
+    
+</body>
+</html>

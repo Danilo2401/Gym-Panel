@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style2.css">
+    <title>Trainer</title>
+
+</head>
+<body>
+    
+
+<div class="hero-img">
+    <img src="hero.jpg" class="img-fluid" alt="hero">
+</div>
+
+
+<div class="container">
+
+    <h2 class="display-1 mt-4 text-center">Add Trainer</h2>
+
+<div class="row justify-content-around text-center align-items-center mt-2">
+    <div class="col-sm-6">
+        <form action="#" class="p-4" method="POST">
+            <div class="pt-4 form-group">
+                <label for="name">First name:</label>
+                <input type="text" class="form-control" id="name" placeholder="Name">
+            </div>
+            <div class="pt-4 form-group">
+                <label for="lastName">Last name:</label>
+                <input type="text" class="form-control" id="lastName" placeholder="Last name">
+            </div>
+            <div class="pt-4 form-group">
+                <label for="trainerID">TrainerID:</label>
+                <input type="text" class="form-control" id="trainerID" placeholder="TrainerID">
+            </div>
+           <div class="pt-4 form-group">
+                <label for="phone">Phone:</label>
+                <input type="text" class="form-control" id="phone" placeholder="Phone number">
+            </div><br>
+            <div class="form-group">
+                <input type="button" id="add-trainer" style="width:150px"; class="btn btn-primary" value="Add">
+                </div>
+            </form>
+            
+            <input type="button" id="btn-back" value="Go Back"  style="width: 200px;" class="mt-4 mb-4 btn btn-warning">
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+$(document).ready(function(){
+
+$("#add-trainer").click(function(){
+
+    let name = $("#name").val();
+    let lastName = $("#lastName").val();
+    let trainerID = $("#trainerID").val();
+    let phone = $("#phone").val();
+
+
+    $.ajax({
+        url:"add_trainer.php",
+        type:"POST",
+        data:{
+            name:name,
+            lastName:lastName,
+            trainerID:trainerID,
+            phone:phone
+        },
+        dataType:"xml",
+        success:function(response){
+           
+            let message = $(response).find("message").first().text();
+
+            
+            if(message === "You have been successfully add member."){
+                alert("You have been successfully add member.");
+                $("#name").val("");
+                $("#lastName").val("");
+                $("#trainerID").val("");
+                $("#phone").val("");
+            }else if(message === "Something is wrong with your inputs."){
+                alert("Something is wrong with your inputs.");
+            }
+
+        },
+        error:function(){
+            alert("Error!");
+        }
+    });
+
+});
+
+$("#btn-back").click(function(){
+
+    window.location.href = "admin_panel.php";
+
+});
+
+
+});
+</script>
+
+</body>
+</html>

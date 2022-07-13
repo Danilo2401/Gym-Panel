@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style2.css">
+    <title>Member details</title>
+</head>
+<body>
+
+<div class="hero-img">
+    <img src="hero.jpg" class="img-fluid" alt="hero">
+</div>
+
+<div class="wrapper">
+
+    <div class="mt-4 container text-center">
+    
+    <nav class="navbar mb-4 navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand">Trainer</a>
+        <form class="d-flex">
+          <input class="form-control me-2" type="search" id="inputSearch" placeholder="Search" aria-label="Search">
+        </form>
+      </div>
+    </nav>
+    
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Number</th>
+          <th scope="col">First Name</th>
+          <th scope="col">Last Name</th>
+          <th scope="col">Trainer ID</th>
+          <th scope="col">Phone</th>
+          <th scope="col">Update</th>
+          <th scope="col">Delete</th>
+        </tr>
+      </thead>
+      <tbody id="trainer-table">
+    
+      </tbody>
+    </table>
+    
+        <input type="button" id="btn-back" value="Go Back"  style="width: 200px;" class="mt-4 btn btn-warning">
+    
+        </div>
+    
+    </div>
+
+
+  <div class="modal" id="modal-update" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Update</h5>
+            <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+            <form action="#" class="p-4" method="POST">
+              <div class="pt-4 form-group">
+                  <label for="nameEdit">First name:</label>
+                  <input type="text" class="form-control" id="nameEdit" placeholder="Name">
+              </div>
+              <div class="pt-4 form-group">
+                  <label for="lastNameEdit">Last name:</label>
+                  <input type="text" class="form-control" id="lastNameEdit" placeholder="Last name">
+              </div>
+              <div class="pt-4 form-group">
+                  <label for="phoneEdit">Phone:</label>
+                  <input type="text" class="form-control" id="phoneEdit" placeholder="Phone">
+              </div>
+              </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="close btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" id="btn-update" class="btn btn-success">Update</button>
+          </div>
+        </div>
+      </div>
+  </div>
+
+
+  <div class="modal" id="modal-delete" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete</h5>
+          <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure that you want to delete trainer?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="close btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" id="btn-delete" class="btn btn-danger">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<script>
+$(document).ready(function(){
+
+
+$("#inputSearch").on("keyup",function(){
+
+  var value = $(this).val().toLowerCase();
+
+  $(".table  tr").filter(function(){
+
+    var searchTable = $(this).text().toLowerCase().indexOf(value);
+
+    $(this).toggle(searchTable > -1);
+
+  });
+
+
+});
+
+let id_trainer = 0;
+
+Read();
+
+function Read(){
+
+  let counter = 1;
+
+  $(".table tbody").empty();
+
+    $.ajax({
+        url:"read_trainer.php",
+        type:"POST",
+        dataType:"xml",
+        success:function(response){
+            $(response).find("trainer").each(function(){
+
+              let idXML = $(this).find("id_trainer").text();
+              let nameTrainerXML = $(this).find("name_trainer").text();
+              let lastName_trainerXML = $(this).find("lastName_trainer").text();
+              let trainerIDXML = $(this).find("trainerID").text();
+              let phoneXML = $(this).find("phone").text();
+
+              $("#trainer-table").append("<tr><th scope='row'>"+ counter++ +"</th><td>"+nameTrainerXML+"</td><td>"+lastName_trainerXML+"</td><td>"+trainerIDXML+"</td><td>"+phoneXML+"</td><td><button type='button' id="+idXML+"  class='update btn btn-success'>Update</button></td><td><button type='button' id="+idXML+"  class='delete btn btn-danger'>Delete</button></td></tr>");
+
+              $(".update").click(function(){
+
+                  id_trainer = $(this).attr("id");
+                  $("#modal-update").show();
+
+              });
+
+              $(".delete").click(function(){
+
+                  id_trainer = $(this).attr("id");
+                  $("#modal-delete").show();
+
+              });
+         
+
+            });  
+        }, 
+        error:function(){
+            alert("Error!");
+        }
+    });
+
+}
+
+
+
+  $("#btn-update").click(function(){
+
+      let nameEdit = $("#nameEdit").val();
+      let lastNameEdit = $("#lastNameEdit").val();
+      let phoneEdit = $("#phoneEdit").val();
+
+      /*console.log(nameEdit + " " + lastNameEdit + " " + phoneEdit);*/
+
+      $.ajax({
+        url:"update_trainer.php",
+        type:"POST",
+        data:{
+          id_trainer:id_trainer,
+          nameEdit:nameEdit,
+          lastNameEdit:lastNameEdit,
+          phoneEdit:phoneEdit
+        },
+        dataType:"xml",
+        success:function(response){
+          
+          let message = $(response).find("message").first().text();
+
+          if(message == "You have been successfully updated trainer."){
+            alert("You have been successfully updated trainer.");
+                $("#modal-update").hide();
+                $("#nameEdit").val("");
+                $("#lastNameEdit").val("");
+                $("#phoneEdit").val("");
+                Read();
+          }else if (message == "Something is wrong with your inputs.") {
+                alert("Something is wrong with your inputs.");
+          }
+
+        },
+        error:function(){
+          alert("error!");
+        }
+
+      });
+
+  });
+
+
+  $("#btn-delete").click(function(){
+
+    $.ajax({
+        url:"delete_trainer.php",
+        type:"POST",
+        data:{
+          id_trainer:id_trainer
+        },
+        success:function(response){
+          
+          Read();
+          alert("You have successfully deleted trainer.");
+          $("#modal-delete").hide();
+
+        },
+        error:function(){
+          alert("error!");
+        }
+
+    });
+    
+
+  });
+
+
+  $(".close").click(function(){
+
+    $(".modal").hide();
+
+  });
+
+  $("#btn-back").click(function(){
+
+      window.location.href = "admin_panel.php";
+
+  });
+
+});
+</script>
+
+    
+</body>
+</html>

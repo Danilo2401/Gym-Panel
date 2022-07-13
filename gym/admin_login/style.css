@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    background: url("background-image.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+#form-panel{
+    background-color: #bcaeaeb6;
+    border-radius: 20px;
+    margin: 300px auto;
+    width: 800px;
+    padding: 20px;
+}
+
+#admin_form button{
+    width: 35%;
+}
+
+.form-label{
+    color: black;
+    font-weight: 600;
+    font-size: 20px;
+}
+
