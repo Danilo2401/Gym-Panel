@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style2.css">
+</head>
+<body>
+
+
+<div class="hero-img">
+    <img src="hero.jpg" class="img-fluid" alt="hero">
+</div>
+
+<div class="container wrapper">
+
+<div class="mt-4 container text-center">
+
+<nav class="navbar mb-4 navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand">Member</a>
+    <form class="d-flex">
+      <input class="form-control me-2" type="search" id="inputSearch" placeholder="Search" aria-label="Search">
+    </form>
+  </div>
+</nav>
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Number</th>
+      <th scope="col">First Name</th>
+      <th scope="col">Last Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Member ID</th>
+      <th scope="col">Trainer name</th>
+      <th scope="col">Trainer last name</th>
+      <th scope="col">Delete</th>
+      <th scope="col">Update</th>
+    </tr>
+  </thead>
+  <tbody id="member-table">
+
+  </tbody>
+</table>
+
+<input type="button" id="btn-back" value="Go Back"  style="width: 200px;" class="mt-4 btn btn-warning">
+
+
+</div>
+
+</div>
+
+<div class="modal" id="modal-delete" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete</h5>
+        <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure that you want to delete user?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="close btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" id="btn-delete" class="btn btn-danger">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal" id="modal-update" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update</h5>
+        <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <form action="#" class="p-4" method="POST">
+          <div class="pt-4 form-group">
+              <label for="nameEdit">First name:</label>
+              <input type="text" class="form-control" id="nameEdit" placeholder="Name">
+          </div>
+          <div class="pt-4 form-group">
+              <label for="lastNameEdit">Last name:</label>
+              <input type="text" class="form-control" id="lastNameEdit" placeholder="Last name">
+          </div>
+          <div class="pt-4 form-group">
+              <label for="emailEdit">Email:</label>
+              <input type="text" class="form-control" id="emailEdit" placeholder="Email">
+          </div>
+          <div class="pt-4 form-group">
+              <label for="trainerEdit">Choose a trainer:</label>
+                  <select id="trainerEdit">
+                  </select>
+            </div><br>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="close btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" id="btn-update" class="btn btn-success">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+$(document).ready(function(){
+
+$("#inputSearch").on("keyup",function(){
+
+    var value = $(this).val().toLowerCase();
+
+    $(".table tr").filter(function(){
+
+        var searchTable = $(this).text().toLowerCase().indexOf(value);
+
+        $(this).toggle(searchTable > -1);
+
+    });
+
+});
+
+let id_member = 0;
+
+ReadMember();
+
+function ReadMember(){
+
+  $(".table tbody").empty();
+
+  $.ajax({
+      url:"read.php",
+      type:"POST",
+      dataType:"xml",
+      success:function(response){
+
+        let counter = 1;
+
+        $(response).find("member").each(function(){
+          
+          let idXML = $(this).find("id").text();
+          let nameXML = $(this).find("name_member").text();
+          let lastNameXML = $(this).find("lastName_member").text();
+          let emailXML = $(this).find("email").text();
+          let memberIDXML = $(this).find("memberID").text();
+          let nameTrainerXML = $(this).find("name_trainer").text();
+          let lastNameTrainerXML = $(this).find("lastName_trainer").text();
+
+
+          $("#member-table").append("<tr><th scope='row'>"+ counter++ +"</th><td>"+nameXML+"</td><td>"+lastNameXML+"</td><td>"+emailXML+"</td><td>"+memberIDXML+"</td><td>"+nameTrainerXML+"</td><td>"+lastNameTrainerXML+"</td><td><button type='button' id="+idXML+" class='mr-4 delete btn btn-danger'>Delete</button></td><td><button type='button' id="+idXML+"  class='update btn btn-success'>Update</button></td></tr>");
+        });
+
+        $(".update").click(function(){
+          
+          id_member = $(this).attr("id");
+          $("#modal-update").show();
+
+        });
+
+        
+        $(".delete").click(function(){
+          
+          id_member = $(this).attr("id");
+          $("#modal-delete").show();
+
+        });
+
+      },
+      error:function(){
+        alert("Error!");
+      }
+  });
+
+}
+
+  $(".close").click(function(){
+
+    $(".modal").hide();
+
+  });
+
+
+  $("#btn-delete").click(function(){
+
+
+    $.ajax({
+        url:"delete_member.php",
+        type:"POST",
+        data:{
+          id_member:id_member
+        },
+        success:function(res){
+          
+          ReadMember();
+          alert("You have successfully deleted member.");
+          $("#modal-delete").hide();
+
+        },
+        error:function(){
+          alert("Error!");
+        }
+    }); 
+
+  });
+
+
+  $("#btn-update").click(function(){
+
+    let nameEdit = $("#nameEdit").val();
+    let lastNameEdit = $("#lastNameEdit").val();
+    let emailEdit = $("#emailEdit").val();
+    let trainerEdit = $("#trainerEdit").val();
+
+
+      $.ajax({
+        url:"update_member.php",
+        type:"POST",
+        data:{
+            id_member:id_member,
+            nameEdit:nameEdit,
+            lastNameEdit:lastNameEdit,
+            emailEdit:emailEdit,
+            trainerEdit:trainerEdit
+        },
+        dataType:"xml",
+        success:function(res){
+          
+          let message = $(res).find("message").first().text();
+
+          if(message == "You have been successfully updated member."){
+                alert("You have been successfully updated member.");
+                $("#modal-update").hide();
+                $("#nameEdit").val("");
+                $("#lastNameEdit").val("");
+                $("#emailEdit").val("");
+                $("#memberIDEdit").val("");
+                ReadMember();
+            }else if (message == "Something is wrong with your inputs.") {
+                alert("Something is wrong with your inputs.");
+            }
+
+        },
+        error:function(){
+          alert("error!");
+        }
+      });
+
+  });
+
+
+
+  $("#btn-back").click(function(){
+
+    window.location.href = "admin_panel.php";
+
+  });
+
+
+  ReadTrainer();
+
+function ReadTrainer(){
+
+    $.ajax({
+        url:"choose_trainer.php",
+        type:"POST",
+        dataType:"xml",
+        success:function(res){
+
+            $(res).find("trainer").each(function(){
+
+                let lastNameXML = $(this).find("lastName_trainer").text();
+                let idXML = $(this).find("id_trainer").text();
+
+                $("#trainerEdit").append("<option id="+idXML+" value="+idXML+">"+lastNameXML+"</option>");
+
+            });
+
+        },
+        error:function(){
+            alert("Error");
+        }
+    })
+
+}
+
+
+});
+</script>
+    
+</body>
+</html>

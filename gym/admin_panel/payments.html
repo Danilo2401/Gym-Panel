@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style2.css">
+    <title>Member details</title>
+</head>
+<body>
+
+<div class="hero-img">
+    <img src="hero.jpg" class="img-fluid" alt="hero">
+</div>
+
+<div class="wrapper">
+
+    <div class="mt-4 container text-center">
+    
+    <nav class="navbar mb-4 navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand">Payments</a>
+        <form class="d-flex">
+          <input class="form-control me-2" type="search" id="inputSearch" placeholder="Search" aria-label="Search">
+        </form>
+      </div>
+    </nav>
+    
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">First Name</th>
+          <th scope="col">Last Name</th>
+          <th scope="col">Email</th>
+          <th scope="col">Date</th>
+          <th scope="col">Amount</th>
+          <th scope="col">Payment type</th>
+          <th scope="col">Update</th>
+        </tr>
+      </thead>
+      <tbody id="payment-table">
+      </tbody>
+    </table>
+    
+        <input type="button" id="btn-back" value="Go Back"  style="width: 200px;" class="mt-4 btn btn-warning">
+    
+        </div>
+    </div>
+
+    
+<div class="row justify-content-around text-center align-items-center mt-2">
+  <div class="col-sm-4">
+      <form action="#" class="p-4" method="POST">
+          <div class="pt-4 form-group">
+              <label for="amount">Amount:</label>
+              <input type="text" class="form-control" id="amount" placeholder="0 RSD">
+          </div>
+          <div class="pt-4 form-group">
+              <label for="date_payment">Date payment:</label>
+              <input type="date" class="form-control" id="date_payment">
+          </div>
+         <div class="pt-4 form-group">
+              <label for="payment_type">Payment type:</label>
+              <select id="payment_type">
+                <option value="cash">Cash</option>
+                <option value="credit-card">Credit card</option>
+                <option value="cheque">Cheque</option>
+              </select>
+          </div><br>
+          <div class="pt-4 form-group">
+            <label for="member">Member:</label>
+            <select id="member">
+            </select>
+        </div><br><br>
+          <div class="form-group">
+              <input type="button" id="add-payment" style="width:150px"; class="btn btn-primary" value="Add">
+              </div>
+          </form>
+          
+          </div>
+      </div>
+
+      <div class="modal" id="modal-update" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Update</h5>
+              <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+              <form action="#" class="p-4" method="POST">
+                <div class="pt-4 form-group">
+                  <label for="amountEdit">Amount:</label>
+                  <input type="text" class="form-control" id="amountEdit" placeholder="0 RSD">
+              </div><br>
+              <div class="pt-4 form-group">
+                <label for="date_paymentEdit">Date payment:</label>
+                <input type="date" class="form-control" id="date_paymentEdit">
+              </div><br><br>
+              <div class="pt-4 form-group">
+                <label for="payment_typeEdit">Payment type:</label>
+                <select id="payment_typeEdit">
+                  <option value="cash">Cash</option>
+                  <option value="credit-card">Credit card</option>
+                  <option value="cheque">Cheque</option>
+                </select>
+            </div><br>
+             </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="close btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" id="btn-update" class="btn btn-success">Update</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+<script>
+$(document).ready(function(){
+
+  let paymentID = 0;
+  
+  $("#inputSearch").on("keyup",function(){
+
+    var value = $(this).val().toLowerCase();
+
+    $(".table tr").filter(function(){
+
+        var searchTable = $(this).text().toLowerCase().indexOf(value);
+
+        $(this).toggle(searchTable > -1);
+
+  });
+
+  });
+
+  MemberGym();
+
+  function MemberGym(){
+
+      $.ajax({
+          url:"choose_member.php",
+          type:"POST",
+          dataType:"xml",
+          success:function(res){
+            
+            $(res).find("member").each(function(){
+
+            let name_memberXML = $(this).find("name_member").text();
+            let lastName_memberXML = $(this).find("lastName_member").text();
+            let idXML = $(this).find("id").text();
+
+            $("#member").append("<option id="+idXML+" value="+idXML+">"+name_memberXML+" "+lastName_memberXML+"</option>");
+
+            });
+
+          },
+          error:function(){
+              alert("Error");
+          }
+      })
+
+      }
+
+
+$("#add-payment").click(function(){
+
+    let amount = $("#amount").val();
+    let date_payment = $("#date_payment").val();
+    let payment_type = $("#payment_type").val();
+    let member = $("#member").val();
+
+   $.ajax({
+      url:"add_payment.php",
+      type:"POST",
+      data:{
+        amount:amount,
+        date_payment:date_payment,
+        payment_type:payment_type,
+        member:member
+      },
+      dataType:"xml",
+      success:function(res){
+        
+        let message = $(res).find("message").first().text();
+
+        ReadPayment();
+
+        if(message == "You have been successfully add payment."){
+            alert("You have been successfully add payment.");
+            $("#amount").val("");
+            $("#date_payment").val("");
+        }else if (message == "Something is wrong with your inputs.") {
+            alert("Something is wrong with your inputs.");
+        }
+
+      },
+      error:function(){
+        alert("Error!");
+      }
+    });
+
+});
+
+ReadPayment();
+
+function ReadPayment(){
+
+    $(".table tbody").empty();
+
+    $.ajax({
+      url:"read_payment.php",
+      type:"POST",
+      dataType:"xml",
+      success:function(res){
+
+        let counter = 1;
+
+        $(res).find("member").each(function(){
+
+          let idXML = $(this).find("id").text();
+          let name_memberXML = $(this).find("name_member").text();
+          let lastName_memberXML = $(this).find("lastName_member").text();
+          let emailXML = $(this).find("email").text();
+          let dateXML = $(this).find("date").text();
+          let amountXML = $(this).find("amount").text();
+          let payment_typeXML = $(this).find("payment_type").text();
+        
+          $("#payment-table").append("<tr><th scope='row'>"+ counter++ +"</th><td>"+name_memberXML+"</td><td>"+lastName_memberXML+"</td><td>"+emailXML+"</td><td>"+dateXML+"</td><td>"+amountXML+"</td><td>"+payment_typeXML+"</td><td><input type='button' value='Update' id="+idXML+" class='update btn btn-success'></td></tr>");
+
+          $(".update").click(function(){
+
+            paymentID = $(this).attr("id");
+
+            $("#modal-update").show();
+
+          });
+     
+
+        });
+
+      },
+      error:function(){
+        alert("Error!");
+      }
+
+    });
+
+}
+
+  $(".close").click(function(){
+
+    $(".modal").hide();
+
+  });
+
+
+
+  $("#btn-update").click(function(){
+
+      let amountEdit = $("#amountEdit").val();
+      let date_paymentEdit = $("#date_paymentEdit").val();
+      let payment_typeEdit = $("#payment_typeEdit").val();
+
+     console.log(paymentID);
+
+      $.ajax({
+        url:"update_payment.php",
+        type:"POST",
+        data:{
+            paymentID:paymentID,
+            amountEdit:amountEdit,
+            date_paymentEdit:date_paymentEdit,
+            payment_typeEdit:payment_typeEdit
+        },
+        dataType:"xml",
+        success:function(res){
+
+            let message = $(res).find("message").first().text();
+
+            if (message == "You have been successfully updated payment.") {
+                alert("You have been successfully updated payment.");
+                $("#modal-update").hide();
+                $("#amountEdit").val("");
+                $("#date_paymentEdit").val("");
+                ReadPayment();
+            }else if (message == "Something is wrong with your inputs.") {
+                alert("Something is wrong with your inputs.");
+            }
+        },
+        error:function(){
+          alert("Error!");
+        }
+
+      });
+
+  });
+
+  $("#btn-back").click(function(){
+
+    window.location.href = "admin_panel.php";
+
+  });
+
+});
+</script>
+
+</body>
+</html>
